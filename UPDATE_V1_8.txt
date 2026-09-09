@@ -1,0 +1,54 @@
+SHADOWOPS v1.8 — PLAYTIME STEPS + PROJECT URGENCY + LIGHT/DARK
+
+Суулгах:
+1. Сая амжилттай суулгасан Supabase project-ийн SQL Editor дээр
+   supabase_shadowops_v1_8.sql файлын БҮХ кодыг Run хийнэ.
+   Энэ нь нэмэлт update; Fresh Install SQL-ийг дахин ажиллуулахгүй.
+   Амжилтын мөр: ShadowOPS v1.8 project steps and urgency installed.
+2. Website repository/hosting дээр дараах 7 файлыг байршуулна:
+   index.html, app.js, styles.css, ux-fixes.css, config.js, bootstrap.js, theme.js.
+3. Deploy дуусмагц сайтаа refresh хийнэ.
+
+Энэ багцын config.js нь таны yuhrfuqighueobnftwtc Supabase project-той
+холбогдсон. Өөр хуучин project-ийн data-г энэ багц шилжүүлэхгүй.
+Live Supabase эсвэл Vercel дээр энэ update-ийг хараахан ажиллуулаагүй.
+
+PLAYTIME:
+- New project -> нэр, client, lead, start/delivery date, scope оруулна.
+- Project нээгээд Add task / step дарж жижиг task-уудаа нэг нэгээр нэмнэ.
+- Task бүр title, designer/manager, date/deadline, process, urgency-тай.
+- Task-ууд 01, 02, 03 гэсэн дарааллаар нэг project дотор харагдана.
+- Up/down сумнууд database-д дарааллыг хадгална. Шинэ task төгсгөлд нэмэгдэнэ.
+- Одоо байгаа project task-ууд эхний удаа assigned time-аараа эрэмбэлэгдэнэ.
+- Алхамын дугаар нь харагдах дараалал; өмнөх алхам дуусахыг албадан хүлээлгэхгүй.
+- Task-ийн urgency-г тухайн мөр дээрээс шууд Low / Normal / Urgent сонгоно.
+- Project urgency = дуусаагүй task-уудын ХАМГИЙН ӨНДӨР urgency.
+- Approved/Ready, Scheduled, Cancelled, Rejected task-ууд urgency-г өсгөхгүй.
+- Нээлттэй task байхгүй бол No open work гэж харуулна.
+- Хоцорсон task-ийг тусад нь overdue гэж харуулна; urgency-г автоматаар
+  өөрчлөхгүй. Project-ийн status гар аргаар өөрчлөгддөг хэвээр.
+- Card дээр next unfinished step, ready task count, progress, overdue count.
+- Task-ууд Task Management-тэй нэг өгөгдөлтэй. Давхар task үүсгэхгүй.
+- Management task-уудын дарааллыг солино; өөрийн task-тай ажилтан urgency-г
+  өөрчилж болно. Эрхийн шалгалтууд database RPC дээр хэрэгжинэ.
+
+DESIGN:
+- Header-ийн Light mode / Dark mode товчоор солино.
+- Сонголт энэ браузерт хадгалагдана; анх системийн theme-ийг дагана.
+- Card-ийн баруун дээд дугуй сум project нээнэ.
+- Summary card-ийн icons нь workload / time / priority / completion утгатай.
+- Project step-үүд дугаар, process, хүн, deadline, urgency, reorder controls-тай.
+- Өнгөөс гадна текст label ашиглана. Keyboard focus, icon button names,
+  mobile layout болон reduced-motion тохиргоог дэмжинэ.
+
+Шалгалт:
+Local PostgreSQL/PGlite дээр fresh v1.7 + v1.8 update, ordering/reordering,
+urgency validation, staff permission болон update-ийг давтан ажиллуулахыг
+шалгасан. Frontend mock tests нь project urgency (urgent task дуусах, cancelled
+exclude, empty project), process filters, ordered task rendering, theme toggle,
+өмнөх HR metric cases-ийг шалгасан. Browser visual/live login test хийгдээгүй.
+
+Дараагийн нэмэлт санаанууд (энэ update-д ороогүй):
+- Project template: Brand identity / Event / Campaign task дарааллыг нэг даралтаар.
+- Task dependency: өмнөх ажил дуусаагүй үед дараагийн ажил Blocked гэж харагдах.
+- Attachment + version history: дизайн файл, засварын хувилбар, approval нэг task-д.

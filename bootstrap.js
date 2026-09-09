@@ -26,7 +26,7 @@
     showMessage('Connection library could not load','Check your internet connection and refresh this page.');
     return;
   }
-  const script=document.createElement('script');script.src='app.js?v=20260909-fresh';
+  const script=document.createElement('script');script.src='app.js?v=20260909-v18';
   script.onerror=()=>showMessage('ShadowOPS could not load','Check that app.js is in the same folder as index.html and refresh.');
   document.body.appendChild(script);
 })();

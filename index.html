@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#111318">
+<script src="theme.js?v=18"></script>
 <title>ShadowOPS — Creative Operations</title>
-<link rel="stylesheet" href="styles.css?v=20260909-shadowops-v17">
+<link rel="stylesheet" href="styles.css?v=20260909-shadowops-v18">
 <link rel="stylesheet" href="ux-fixes.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -71,7 +72,7 @@
 <header>
   <button id="menu" class="mobile-only">☰</button>
   <div><span class="breadcrumb" id="breadcrumb">SHADOWOPS / OVERVIEW</span><small id="date"></small></div>
-  <div class="header-actions"><select id="month"></select><button class="btn" id="quickActivity">+ New activity</button></div>
+  <div class="header-actions"><button id="themeToggle" class="theme-toggle" type="button" onclick="toggleTheme()" aria-label="Switch color theme"><span aria-hidden="true">◐</span><span>Theme</span></button><select id="month"></select><button class="btn" id="quickActivity">+ New activity</button></div>
 </header>
 
 <div class="pages">
@@ -224,5 +225,5 @@
 <div id="drawer" class="drawer hidden"><div class="drawer-shade"></div><aside><button id="closeDrawer">×</button><div id="drawerBody"></div></aside></div>
 <div id="loading" class="loading hidden"><div class="loader"></div><span>Syncing data</span></div>
 <script src="config.js"></script>
-<script src="bootstrap.js?v=20260909-fresh"></script>
+<script src="bootstrap.js?v=20260909-v18"></script>
 </body></html>
