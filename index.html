@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#111318">
 <script src="theme.js?v=18"></script>
 <title>ShadowOPS — Creative Operations</title>
-<link rel="stylesheet" href="styles.css?v=20260909-shadowops-v18">
+<link rel="stylesheet" href="styles.css?v=20260909-shadowops-v110">
 <link rel="stylesheet" href="ux-fixes.css">
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -41,7 +41,7 @@
 
 <div id="app" class="app hidden">
 <aside id="sidebar">
-  <div class="brand sidebar-brand"><span class="sigil">S</span><div>SHADOW<span>OPS</span><small>COMMAND CENTER</small></div></div>
+  <div class="brand sidebar-brand"><img class="suuder-logo" src="suuder-logo.svg?v=181" width="580" height="118" alt="Suuder"><small>COMMAND CENTER</small></div>
   <div class="commander"><span class="avatar">J</span><div><small>WORKSPACE</small><strong>SHADOWOPS</strong></div><i class="online"></i></div>
   <nav>
     <small>WORKSPACE</small>
@@ -189,10 +189,22 @@
 </section>
 
 <section id="revenue" class="page">
- <div class="page-head"><div><div class="overline">FINANCIAL OPERATIONS</div><h1>Revenue</h1><p>Client subscription revenue by default, with separate additional-work and combined views.</p></div><div class="revenue-controls"><select id="revenueMode"><option value="retainer">Client subscriptions</option><option value="bonus">Additional work only</option><option value="combined">Combined revenue</option></select><select id="revenueYear"></select></div></div>
- <div id="revenueSummary" class="revenue-summary"></div>
- <article class="hero-report"><div class="hero-report-head"><div><span class="eyebrow">12 MONTH VIEW</span><h2 id="revenueChartTitle">Client subscription revenue</h2><p id="revenueChartSubtitle">Monthly recurring client payments.</p></div></div><div class="chart-stage"><canvas id="revenueChart"></canvas></div></article>
- <div class="revenue-columns"><article class="panel"><div class="panel-head"><div><small>CLIENT RETAINERS</small><h2>Monthly client revenue</h2></div></div><div id="clientRevenueTable"></div></article><article class="panel"><div class="panel-head"><div><small>ADDITIONAL WORK</small><h2>Extra revenue by personnel</h2></div></div><div id="bonusRevenueTable"></div></article></div>
+ <div class="page-head"><div><div class="overline">FINANCIAL OPERATIONS</div><h1>Revenue</h1><p>Expected revenue by payment date, payment type and receiving company.</p></div><div class="revenue-add-actions"><button class="btn" onclick="newRevenueModal('retainer')">+ Monthly client</button><button class="btn primary" onclick="newRevenueModal('bonus')">+ Additional work</button><button class="btn" onclick="openRevenueImport()">Import PDF data</button></div></div>
+ <div class="revenue-filters">
+ <label>Revenue source<select id="revenueMode"><option value="combined">All revenue</option><option value="retainer">Client subscriptions</option><option value="bonus">Additional work</option></select></label>
+ <label>Period<select id="revenuePeriod" onchange="renderRevenue()"><option value="month">Month</option><option value="year">Year</option><option value="custom">Custom dates</option></select></label>
+ <label id="revenueMonthWrap">Month<input id="revenueMonth" type="month" onchange="renderRevenue()"></label>
+ <label id="revenueYearWrap">Year<input id="revenueYear" type="number" min="2000" max="2100" onchange="renderRevenue()"></label>
+ <label id="revenueFromWrap">From<input id="revenueFrom" type="date" onchange="renderRevenue()"></label>
+ <label id="revenueToWrap">To<input id="revenueTo" type="date" onchange="renderRevenue()"></label>
+ <label>Date basis<select id="revenueDateBasis" onchange="renderRevenue()"><option value="billing">Billing / work date</option><option value="invoice_date">Invoice date</option><option value="payment_date">Expected payment</option><option value="due_date">Due date</option><option value="paid_date">Paid date</option></select></label>
+ <label>Status<select id="revenueStatus" onchange="renderRevenue()"><option value="all">All statuses</option><option value="paid">Paid</option><option value="unpaid">Unpaid</option><option value="partial">Partial</option><option value="unknown">Not confirmed</option><option value="overdue">Overdue</option></select></label>
+ <label>Payment<select id="revenuePayment" onchange="renderRevenue()"><option value="all">All types</option><option value="cash">Cash</option><option value="barter">Barter</option><option value="unset">Not set</option></select></label>
+ <label>Receiving company<select id="revenueCompany" onchange="renderRevenue()"><option value="all">All companies</option></select></label>
+ </div><p id="revenueDateNote" class="muted" role="status"></p>
+ <div id="revenueReminders" aria-live="polite"></div><div id="revenueSummary" class="revenue-summary"></div>
+ <article class="hero-report"><div class="hero-report-head"><div><span class="eyebrow">SELECTED PERIOD</span><h2 id="revenueChartTitle">Client subscription revenue</h2><p id="revenueChartSubtitle">Monthly recurring client payments.</p></div></div><div class="chart-stage"><canvas id="revenueChart"></canvas></div></article>
+ <div class="revenue-columns"><article class="panel"><div class="panel-head"><div><small>CLIENT RETAINERS</small><h2>Monthly client revenue</h2></div></div><div id="clientRevenueTable"></div></article><article class="panel"><div class="panel-head"><div><small>ADDITIONAL WORK</small><h2>Additional work revenue</h2></div></div><div id="bonusRevenueTable"></div></article></div>
 </section>
 
 
@@ -225,5 +237,5 @@
 <div id="drawer" class="drawer hidden"><div class="drawer-shade"></div><aside><button id="closeDrawer">×</button><div id="drawerBody"></div></aside></div>
 <div id="loading" class="loading hidden"><div class="loader"></div><span>Syncing data</span></div>
 <script src="config.js"></script>
-<script src="bootstrap.js?v=20260909-v18"></script>
+<script src="bootstrap.js?v=20260909-v110"></script>
 </body></html>
