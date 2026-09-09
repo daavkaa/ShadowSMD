@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111318">
+<title>ShadowOPS — Creative Operations</title>
+<link rel="stylesheet" href="styles.css?v=20260909-shadowops-v17">
+<link rel="stylesheet" href="ux-fixes.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<div id="toast"></div>
+<section id="auth" class="auth">
+  <div class="auth-art">
+    <div class="scan"></div>
+    <div class="brand"><span class="sigil">S</span><div>SHADOW<span>OPS</span><small>CREATIVE OPERATIONS</small></div></div>
+    <div class="auth-copy"><div class="overline">COMMAND AUTHORIZATION</div><h1>Run creative operations.<br><em>Clearly.</em></h1><p>People, clients, workload, performance, and wellbeing in one focused workspace.</p></div>
+    <div class="status-strip"><span>Secure workspace</span><span>Live Supabase data</span><span>Private by design</span></div>
+  </div>
+  <form id="authForm" class="auth-card">
+    <div class="mobile-brand brand"><span class="sigil">S</span><div>SHADOW<span>OPS</span></div></div>
+    <div class="overline">WELCOME BACK</div><h2>Sign in to ShadowOPS</h2><p>Use your existing ShadowOPS account.</p>
+    <label>Email</label><input id="email" type="email" required autocomplete="email">
+    <label>Password</label><input id="password" type="password" required autocomplete="current-password">
+    <button class="btn primary wide">SIGN IN <span>→</span></button>
+    <button type="button" id="signup" class="btn ghost wide">CREATE ACCOUNT</button>
+    <div id="authMsg" class="muted"></div>
+  </form>
+</section>
+
+<section id="accessGate" class="access-gate hidden">
+  <div class="access-gate-shell">
+    <div class="brand access-gate-brand"><span class="sigil">S</span><div>SHADOW<span>OPS</span><small>ACCESS CONTROL</small></div></div>
+    <div id="accessGateBody"></div>
+  </div>
+</section>
+
+<div id="app" class="app hidden">
+<aside id="sidebar">
+  <div class="brand sidebar-brand"><span class="sigil">S</span><div>SHADOW<span>OPS</span><small>COMMAND CENTER</small></div></div>
+  <div class="commander"><span class="avatar">J</span><div><small>WORKSPACE</small><strong>SHADOWOPS</strong></div><i class="online"></i></div>
+  <nav>
+    <small>WORKSPACE</small>
+    <button class="nav active" data-page="overview" data-exec-nav>◫ <span>Overview</span></button>
+    <button class="nav hidden" data-page="myspace" id="mySpaceNav">◎ <span>My Space</span></button>
+    <small data-exec-nav>PEOPLE</small>
+    <button class="nav" data-page="designers" data-exec-nav>◉ <span>Designers</span><b id="designNavCount">0</b></button>
+    <button class="nav" data-page="managers" data-exec-nav>◉ <span>Managers</span><b id="managerNavCount">0</b></button>
+    <button class="nav" data-page="hr" data-exec-nav>◷ <span>HR · Efficiency</span></button>
+    <small>OPERATIONS</small>
+    <button class="nav" data-page="tasks">☷ <span>Tasks</span><b id="taskNavCount">0</b></button>
+    <button class="nav" data-page="playtime" data-exec-nav>▧ <span>PLAYTIME</span></button>
+    <button class="nav" data-page="clients" data-exec-nav>▢ <span>Clients</span><b id="clientNavCount">0</b></button>
+    <button class="nav" data-page="activity">≡ <span>Activity</span></button>
+    <button class="nav" data-page="categories" data-exec-nav>◇ <span>Measurements</span></button>
+    <small data-exec-nav>INSIGHTS</small>
+    <button class="nav" data-page="wellbeing" data-exec-nav>♡ <span>Wellbeing</span></button>
+    <button class="nav" data-page="reports" data-exec-nav>▤ <span>Reports</span></button>
+    <button class="nav" data-page="revenue" data-exec-nav>₮ <span>Revenue</span></button>
+    <small data-exec-nav>ADMIN</small>
+    <button class="nav" data-page="accessrequests" data-owner-only>◎ <span>Access Requests</span><b id="accessRequestNavCount">0</b></button>
+    <button class="nav" data-page="teamaccess" data-exec-nav>⌘ <span>Team Access</span></button>
+  </nav>
+  <div class="side-bottom"><span id="userEmail"></span><button id="logout">SIGN OUT</button></div>
+</aside>
+
+<main>
+<header>
+  <button id="menu" class="mobile-only">☰</button>
+  <div><span class="breadcrumb" id="breadcrumb">SHADOWOPS / OVERVIEW</span><small id="date"></small></div>
+  <div class="header-actions"><select id="month"></select><button class="btn" id="quickActivity">+ New activity</button></div>
+</header>
+
+<div class="pages">
+<section id="overview" class="page active">
+  <div class="page-head report-page-head"><div><div class="overline">ANALYTICS OVERVIEW</div><h1>Creative operations at a glance</h1><p>One unified picture across Design and Management, with instant drill-down by unit or person.</p></div><div class="overview-head-actions"><div class="alert-chip"><i></i><span id="attentionTotal">0</span> need attention</div><button class="btn primary" id="overviewLogActivity">+ New activity</button></div></div>
+
+  <section class="hero-report reveal">
+    <div class="hero-report-head">
+      <div><span class="eyebrow">PRIMARY ANALYTICS</span><h2>Monthly performance</h2><p id="overviewChartSubtitle">Unified performance across all active personnel.</p></div>
+      <div class="report-controls">
+        <label>Scope<select id="overviewScope"><option value="all">All teams</option><option value="designer">Design unit</option><option value="manager">Manager unit</option><option value="individual">Individual</option></select></label>
+        <label id="overviewPersonWrap" class="hidden">Person<select id="overviewPerson"></select></label>
+        <label>Metric<select id="overviewMetric"><option value="kpi">Performance rating</option><option value="activity">Activity volume</option><option value="balance">Positive balance</option><option value="workload">Workload</option><option value="wellbeing">Wellbeing</option></select></label>
+        <label>Range<select id="overviewRange"><option value="3">3 months</option><option value="6" selected>6 months</option><option value="12">12 months</option></select></label>
+      </div>
+    </div>
+    <div class="hero-metrics">
+      <div><span>Current score</span><strong id="heroCurrent">—</strong><small id="heroCurrentDelta">Selected period</small></div>
+      <div><span>Total activities</span><strong id="heroActivities">0</strong><small>Across selected scope</small></div>
+      <div><span>People</span><strong id="heroPeople">0</strong><small>Included in chart</small></div>
+      <div><span>Clients represented</span><strong id="heroClients">0</strong><small>Unique assignments</small></div>
+    </div>
+    <div class="chart-stage chart-stage-large"><canvas id="overviewMainChart"></canvas></div>
+  </section>
+
+  <div class="metric-strip reveal">
+    <article><span>Design score</span><strong id="designScore">100</strong><small><b id="designCount">0</b> people · <b id="designClients">0</b> clients</small></article>
+    <article><span>Management score</span><strong id="managerScore">100</strong><small><b id="managerCount">0</b> people · <b id="managerClients">0</b> clients</small></article>
+    <article><span>Design wellbeing</span><strong id="designMood">CONTENT</strong><small><b id="designOver">0</b> overloaded</small></article>
+    <article><span>Management wellbeing</span><strong id="managerMood">CONTENT</strong><small><b id="managerOver">0</b> overloaded</small></article>
+  </div>
+
+  <article class="analytics-card task-load-overview reveal" id="taskLoadOverviewCard"><div class="analytics-card-head"><div><span class="eyebrow">TODAY'S DISTRIBUTION</span><h3>Task load across personnel</h3><p class="muted">Active assigned work, due-today pressure and delayed work.</p></div><button data-jump="tasks">Open tasks</button></div><div id="overviewTaskLoad" class="task-load-grid"></div></article>
+
+  <div class="secondary-charts reveal">
+    <article class="analytics-card"><div class="analytics-card-head"><div><span class="eyebrow">UNIT COMPARISON</span><h3>Design vs Management</h3></div><select id="unitCompareMetric"><option value="kpi">Performance</option><option value="activity">Activity</option><option value="wellbeing">Wellbeing</option></select></div><div class="chart-stage"><canvas id="unitComparisonChart"></canvas></div></article>
+    <article class="analytics-card"><div class="analytics-card-head"><div><span class="eyebrow">ACTIVITY MIX</span><h3>Operational signals</h3></div><button data-jump="activity">View timeline</button></div><div class="chart-stage"><canvas id="activityMixChart"></canvas></div></article>
+    <article class="analytics-card"><div class="analytics-card-head"><div><span class="eyebrow">CLIENT LOAD</span><h3>Workload concentration</h3></div><button data-jump="clients">View clients</button></div><div class="chart-stage"><canvas id="clientLoadChart"></canvas></div></article>
+    <article class="analytics-card"><div class="analytics-card-head"><div><span class="eyebrow">TEAM CONDITION</span><h3>Wellbeing distribution</h3></div><button data-jump="wellbeing">View wellbeing</button></div><div class="chart-stage"><canvas id="wellbeingChart"></canvas></div></article>
+  </div>
+
+  <div class="overview-lower reveal">
+    <article class="panel portfolio-card"><div class="panel-head"><div><small>CLIENT OPERATIONS</small><h2>Portfolio readiness</h2></div><button data-jump="clients">View clients</button></div><div id="clientIntel" class="intel-stats"></div></article>
+    <article class="panel"><div class="panel-head"><div><small>RECENT TRANSMISSIONS</small><h2>Operational activity</h2></div><button data-jump="activity">Full log</button></div><div id="overviewActivity" class="activity-list"></div></article>
+  </div>
+  <div id="moodBars" class="hidden"></div>
+</section>
+
+<section id="designers" class="page unit-page" data-unit="designer">
+ <div class="page-head"><div><div class="overline">UNIT DU-01</div><h1>Design Unit</h1><p>Creative performance, client load and personnel condition.</p></div><button class="btn primary" data-add-person="designer">+ ADD DESIGNER</button></div>
+ <div id="designerSummary" class="summary-row"></div><article class="unit-mini-chart analytics-card"><div class="analytics-card-head"><div><span class="eyebrow">DESIGN TREND</span><h3>Monthly unit performance</h3></div></div><div class="chart-stage chart-stage-small"><canvas id="designerTrendChart"></canvas></div></article><div id="designerGrid" class="person-grid"></div>
+</section>
+
+<section id="managers" class="page unit-page" data-unit="manager">
+ <div class="page-head"><div><div class="overline">UNIT MU-01</div><h1>Management Unit</h1><p>Planning, communication, deadlines and client command.</p></div><button class="btn primary" data-add-person="manager">+ ADD MANAGER</button></div>
+ <div id="managerSummary" class="summary-row"></div><article class="unit-mini-chart analytics-card"><div class="analytics-card-head"><div><span class="eyebrow">MANAGEMENT TREND</span><h3>Monthly unit performance</h3></div></div><div class="chart-stage chart-stage-small"><canvas id="managerTrendChart"></canvas></div></article><div id="managerGrid" class="person-grid"></div>
+</section>
+
+<section id="myspace" class="page">
+ <div class="page-head"><div><div class="overline">PERSONAL WORKSPACE</div><h1>My Space</h1><p>Your personal profile, daily work list, assigned clients and contact information.</p></div><button id="mySpaceLog" class="btn primary">+ Log work</button></div>
+ <div id="mySpaceBody"></div>
+</section>
+
+<section id="tasks" class="page">
+ <div class="page-head"><div><div class="overline">WORK MANAGEMENT</div><h1>Task Management</h1><p>Daily work, creative process and urgency.</p></div><button id="addTask" class="btn primary">+ Add task</button></div>
+ <div class="standup-controls">
+  <div class="standup-datebar"><button id="taskPrevDay" type="button">←</button><input id="taskDate" type="date"><button id="taskToday" type="button">Today</button><button id="taskNextDay" type="button">→</button></div>
+  <div class="standup-view-switch"><button type="button" data-task-group="person" class="active">Personnel</button><button type="button" data-task-group="client">Clients</button></div>
+</div>
+<div class="task-toolbar"><input id="taskSearch" type="search" placeholder="Search task, client or work type…"><select id="taskStatus"><option value="active">Active work</option><option value="all">All states</option><option value="completed">Approved / Scheduled</option><option value="delayed">Delayed</option><option value="postponed">Postponed</option><option value="cancelled">Cancelled</option><option value="rejected">Rejected</option></select><select id="taskPerson"><option value="all">All personnel</option></select><select id="taskClientFilter"><option value="all">All clients</option></select></div>
+ <div id="processFilterBar" class="process-bar" aria-label="Filter by process"></div><div id="taskSummary" class="task-summary"></div><div id="taskList" class="task-list"></div>
+</section>
+
+<section id="hr" class="page">
+ <div class="page-head"><div><div class="overline">PEOPLE · HR</div><h1>Measurements &amp; Efficiency</h1><p>Deadline delivery and attendance for the selected month.</p></div><div class="person-actions"><button class="btn" onclick="setPage('categories')">Measurements</button><button class="btn primary" onclick="attendanceModal()">+ Attendance</button></div></div>
+ <div id="hrBody"></div>
+</section>
+<section id="playtime" class="page">
+ <div class="page-head"><div><div class="overline">COMMISSIONED WORK</div><h1>PLAYTIME</h1><p>Large projects, broken into clear deliverables and daily tasks.</p></div><button class="btn primary" onclick="projectModal()">+ New project</button></div>
+ <div class="task-toolbar"><input id="projectSearch" type="search" placeholder="Search project or client" oninput="renderPlaytime()"><select id="projectFilter" onchange="renderPlaytime()"><option value="active">Active projects</option><option value="all">All projects</option><option value="planning">Planning</option><option value="in_progress">In progress</option><option value="on_hold">On hold</option><option value="completed">Completed</option></select></div><div id="playtimeBody" class="project-grid"></div>
+</section>
+<section id="clients" class="page">
+ <div class="page-head"><div><div class="overline">ACTIVE OPERATIONS</div><h1>Client Portfolio</h1><p>Service health, assigned personnel and operational workload.</p></div><button id="addClient" class="btn primary">+ ADD CLIENT</button></div>
+ <div id="clientLifecycleSummary" class="client-lifecycle-summary"></div>
+ <div class="client-filter-tabs" role="tablist" aria-label="Client lifecycle"><button class="active" data-client-filter="active">Active <b>0</b></button><button data-client-filter="paused">Paused <b>0</b></button><button data-client-filter="ended">Ended <b>0</b></button><button data-client-filter="archived">Archive <b>0</b></button><button data-client-filter="all">All <b>0</b></button></div>
+ <div class="client-toolbar"><div class="big-count"><strong id="clientCount">0</strong><span>CLIENTS IN VIEW</span></div><div class="view-toggle"><button class="active" data-view="grid">GRID</button><button data-view="list">LIST</button></div></div>
+ <div id="clientGrid" class="client-grid"></div><div id="clientList" class="client-list hidden"></div>
+</section>
+
+<section id="activity" class="page">
+ <div class="page-head"><div><div class="overline">ACTIVITY</div><h1>Activity timeline</h1><p>A complete day-by-day record across people and clients.</p></div><button id="addActivity" class="btn primary">+ New activity</button></div>
+ <div class="activity-filterbar">
+  <input id="activitySearch" class="search-input" type="search" placeholder="Search activity, notes, people, or clients…">
+  <select id="activityUnit"><option value="all">All teams</option><option value="designer">Designers</option><option value="manager">Managers</option></select>
+  <select id="activityType"><option value="all">All types</option><option value="error">Errors</option><option value="achievement">Achievements</option><option value="consistency">Consistency</option></select>
+  <select id="activityPerson"><option value="all">All people</option></select>
+  <select id="activityClient"><option value="all">All clients</option><option value="internal">Internal / no client</option></select>
+ </div>
+ <div class="activity-shell">
+  <div id="activityList" class="activity-timeline"></div>
+  <aside class="activity-sidebar"><h3>Jump to date</h3><input id="activityDate" class="date-jump" type="date"><div class="date-shortcuts"><button id="activityToday" type="button">Today</button><button id="activityLatest" type="button">Latest</button></div><div id="activityCount" class="activity-count"></div></aside>
+ </div>
+</section>
+
+<section id="categories" class="page">
+ <div class="page-head"><div><div class="overline">MEASUREMENT PROTOCOL</div><h1>Standards & Measurements</h1><p>Separate scoring frameworks for Designers and Managers.</p></div><button id="addMeasurement" class="btn primary">+ ADD MEASUREMENT</button></div>
+ <div class="unit-tabs"><button class="active" data-cat-unit="designer">DESIGN UNIT</button><button data-cat-unit="manager">MANAGEMENT UNIT</button></div>
+ <div id="categoryColumns" class="category-columns"></div>
+</section>
+
+<section id="wellbeing" class="page">
+ <div class="page-head"><div><div class="overline">RESTRICTED INTELLIGENCE</div><h1>Personnel Wellbeing</h1><p>Operational distress is a private support signal and never changes performance rating.</p></div><select id="wellbeingRange"><option value="1">THIS MONTH</option><option value="3">3 MONTHS</option><option value="6">6 MONTHS</option><option value="12">12 MONTHS</option></select></div>
+ <div id="wellbeingOverview" class="wellbeing-overview"></div><article class="analytics-card wellbeing-trend-card"><div class="analytics-card-head"><div><span class="eyebrow">CONFIDENTIAL TREND</span><h3>Monthly wellbeing signal</h3></div></div><div class="chart-stage chart-stage-small"><canvas id="wellbeingTrendChart"></canvas></div></article><div id="wellbeingPeople" class="wellbeing-grid"></div>
+</section>
+
+<section id="revenue" class="page">
+ <div class="page-head"><div><div class="overline">FINANCIAL OPERATIONS</div><h1>Revenue</h1><p>Client subscription revenue by default, with separate additional-work and combined views.</p></div><div class="revenue-controls"><select id="revenueMode"><option value="retainer">Client subscriptions</option><option value="bonus">Additional work only</option><option value="combined">Combined revenue</option></select><select id="revenueYear"></select></div></div>
+ <div id="revenueSummary" class="revenue-summary"></div>
+ <article class="hero-report"><div class="hero-report-head"><div><span class="eyebrow">12 MONTH VIEW</span><h2 id="revenueChartTitle">Client subscription revenue</h2><p id="revenueChartSubtitle">Monthly recurring client payments.</p></div></div><div class="chart-stage"><canvas id="revenueChart"></canvas></div></article>
+ <div class="revenue-columns"><article class="panel"><div class="panel-head"><div><small>CLIENT RETAINERS</small><h2>Monthly client revenue</h2></div></div><div id="clientRevenueTable"></div></article><article class="panel"><div class="panel-head"><div><small>ADDITIONAL WORK</small><h2>Extra revenue by personnel</h2></div></div><div id="bonusRevenueTable"></div></article></div>
+</section>
+
+
+<section id="accessrequests" class="page">
+ <div class="page-head"><div><div class="overline">OWNER AUTHORIZATION</div><h1>Access Requests</h1><p>Review identity claims before anyone receives access to the shared ShadowOPS workspace.</p></div></div>
+ <div id="accessRequestList" class="team-access-list"></div>
+</section>
+
+<section id="teamaccess" class="page">
+ <div class="page-head"><div><div class="overline">ACCESS CONTROL</div><h1>Team Access</h1><p>One ShadowOPS workspace, different clearances. P/A accounts are isolated to their own work.</p></div><button id="addTeamAccess" class="btn primary" data-owner-only>+ Add access</button></div>
+ <div class="access-legend"><article><b>OWNER</b><span>Full control. Cannot be limited.</span></article><article><b>E-LEVEL</b><span>Executive visibility, export, clients, assignments and management.</span></article><article><b>M-LEVEL</b><span>Senior management access equivalent to E-Level operations.</span></article><article><b>P-LEVEL</b><span>Own profile, assigned clients and tasks. Performance reviewed. No wellbeing intelligence.</span></article><article><b>A-LEVEL</b><span>Junior / intern access, same operational visibility as P-Level.</span></article></div>
+ <div id="teamAccessList" class="team-access-list"></div>
+</section>
+
+<section id="reports" class="page">
+ <div class="page-head"><div><div class="overline">COMMAND INTELLIGENCE</div><h1>Reports</h1><p>Generate isolated reports for higher leadership.</p></div></div>
+ <section class="hero-report reports-hero"><div class="hero-report-head"><div><span class="eyebrow">REPORT BUILDER</span><h2>Analytics report</h2><p>Review the complete operational picture, then export focused unit reports.</p></div><div class="report-controls"><label>Scope<select id="reportScope"><option value="all">All teams</option><option value="designer">Design unit</option><option value="manager">Manager unit</option></select></label><label>Range<select id="reportRange"><option value="3">3 months</option><option value="6" selected>6 months</option><option value="12">12 months</option></select></label></div></div><div class="chart-stage"><canvas id="reportsMainChart"></canvas></div></section>
+ <div class="report-grid modern-report-grid">
+  <article><span>DU-01</span><h2>Design Unit Report</h2><p>Performance, categories, client load and personnel rankings. No manager data.</p><button class="btn primary" data-export="designer">Export design PDF</button></article>
+  <article><span>MU-01</span><h2>Management Unit Report</h2><p>Planning, communication, deadline and client service performance. No designer data.</p><button class="btn primary" data-export="manager">Export management PDF</button></article>
+  <article><span>CL-OPS</span><h2>Client Portfolio Report</h2><p>Agency-scored operational performance, workload, activity impact and assigned personnel.</p><button class="btn" data-export="clients">Export client PDF</button></article>
+  <article class="restricted"><span>RESTRICTED</span><h2>Wellbeing Report</h2><p>Confidential distress trends. Only export deliberately.</p><button class="btn danger" data-export="wellbeing">Export restricted PDF</button></article>
+ </div>
+</section>
+</div>
+</main>
+</div>
+
+<div id="modal" class="modal hidden"><div class="modal-card"><div class="modal-head"><div><small id="modalOverline">EDIT</small><h2 id="modalTitle">Add</h2></div><button id="closeModal">×</button></div><div id="modalBody"></div></div></div>
+<div id="drawer" class="drawer hidden"><div class="drawer-shade"></div><aside><button id="closeDrawer">×</button><div id="drawerBody"></div></aside></div>
+<div id="loading" class="loading hidden"><div class="loader"></div><span>Syncing data</span></div>
+<script src="config.js"></script>
+<script src="bootstrap.js?v=20260909-fresh"></script>
+</body></html>

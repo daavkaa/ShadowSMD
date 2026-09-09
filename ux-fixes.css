@@ -1,0 +1,58 @@
+
+/* ShadowOPS usability patch — intentionally conservative */
+.search-choice-list{
+  max-height:240px;
+  overflow:auto;
+  margin-top:8px;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:10px;
+  background:rgba(255,255,255,.025);
+}
+.search-choice{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  margin:0;
+  cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.search-choice:last-child{border-bottom:0}
+.search-choice:hover{background:rgba(255,255,255,.05)}
+.search-choice input{
+  width:18px;
+  height:18px;
+  margin:0;
+  flex:0 0 auto;
+}
+.search-choice span{line-height:1.25}
+.empty-choice{padding:16px}
+.readonly-note{
+  min-height:42px;
+  display:flex;
+  align-items:center;
+  padding:10px 12px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:8px;
+  background:rgba(255,255,255,.035);
+  color:var(--muted,#8f9a94);
+}
+.score-badge small{
+  display:block;
+  max-width:120px;
+  margin-top:4px;
+  font-size:9px;
+  line-height:1.25;
+  letter-spacing:.06em;
+  opacity:.72;
+}
+input[type="date"]{
+  min-height:44px;
+  color-scheme:dark;
+}
+.well-card header b{font-weight:700}
+.form-grid small.muted{
+  display:block;
+  margin-top:6px;
+  line-height:1.35;
+}

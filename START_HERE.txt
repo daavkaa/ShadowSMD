@@ -1,0 +1,123 @@
+SHADOWOPS — ШИНЭ SUPABASE PROJECT-Д ЭХНЭЭС НЬ СУУЛГАХ
+====================================================
+Энэ ZIP нь шинэ project-д зориулсан бүтэн багц.
+Өмнөх SQL migration-ууд шаардлагагүй. Одоогоор live project-д холбогдоогүй.
+
+1. SUPABASE PROJECT ҮҮСГЭХ
+https://supabase.com/dashboard руу нэвтэрнэ.
+New project -> Organization сонгоно -> Project name: ShadowOPS.
+Database password-оо үүсгэж өөртөө хадгална. Region сонгоод project үүсгэнэ.
+Database password нь ShadowOPS-д нэвтрэх хэрэглэгчийн password-оос тусдаа.
+
+2. ӨӨРИЙН LOGIN ACCOUNT-ЫГ ҮҮСГЭХ
+Шинэ project дотор Authentication -> Users -> Add user -> Create new user.
+ShadowOPS-д нэвтрэх өөрийн email болон password-ийг оруулна.
+Auto Confirm User сонголтыг идэвхтэй байлгаж Create user дарна.
+Нууц үгээ чат руу явуулах шаардлагагүй.
+
+3. БҮТЭН SQL INSTALLER АЖИЛЛУУЛАХ
+supabase_shadowops_FRESH_INSTALL.sql файлыг VS Code / TextEdit-ээр нээнэ.
+Файлын эхний хэсэг дэх энэ мөрийг олно:
+
+set local shadowops.owner_email = 'YOUR_LOGIN_EMAIL_HERE';
+
+YOUR_LOGIN_EMAIL_HERE гэдгийг 2-р алхамд үүсгэсэн өөрийн email-ээр солино.
+Жишээ: set local shadowops.owner_email = 'myname@example.com';
+
+Supabase -> SQL Editor -> New query.
+SQL файлын БҮХ кодыг copy/paste хийгээд Run дарна.
+Эхнээс нь дуустал нэг удаа бүхлээр нь ажиллуулна.
+SQL Editor-ийн role нь postgres байна.
+
+Амжилттай бол:
+ShadowOPS fresh installation complete. Sign in with your Owner email.
+
+Алдаа гарвал error-ийн текстийг явуулна. Installer нэг transaction тул
+алдаа гарсан тохиолдолд дутуу хүснэгтүүд үлдээхгүй. Эхний алдааг зассаны дараа
+бүх файлыг дахин ажиллуулж болно. Амжилттай суусны дараа дахин ажиллуулах
+шаардлагагүй; existing tables гэсэн хамгаалалт зогсооно.
+
+Installer нь workspaces, memberships, personnel, clients, measurements,
+activity, tasks, task history, revenue, access approval, attendance, PLAYTIME,
+RLS policies болон app-ийн бүх RPC-ийг үүсгэнэ.
+Таны email-ийг Owner эрхтэй холбож, Workspace Owner гэсэн personnel profile
+болон 21 төрлийн анхны Measurements үүсгэнэ. Owner нэрээ дараа нь засаж болно.
+Client, employee болон task-ийн жишээ/хуурамч дата нэмэхгүй.
+
+4. ШИНЭ PROJECT-ИЙН CONNECTION-ИЙГ ХОЛБОХ
+Supabase project-ийн Connect хэсгээс Project URL болон publishable key авна.
+Publishable key нь sb_publishable_... гэж эхэлнэ.
+Settings -> API Keys хэсгээс мөн publishable key-г авч болно.
+
+Энэ багцын config.js файлыг нээгээд хоёр хоосон утгыг бөглөнө:
+
+window.SHADOWOPS_CONFIG = {
+  url: 'https://YOUR_PROJECT_REF.supabase.co',
+  publishableKey: 'sb_publishable_YOUR_KEY'
+};
+
+URL болон publishable key нь браузерийн connection-д зориулсан public утгууд.
+Secret key, service_role key, database password-ийг config.js-д оруулахгүй.
+Bootstrap нь secret/service_role key-г хүлээж авахгүй.
+Connection бөглөөгүй үед өмнөх database руу хандахгүй, setup message харуулна.
+
+5. WEBSITE ФАЙЛУУДЫГ БАЙРШУУЛАХ
+Дараах 6 файлыг нэг folder/repository root-д байршуулж static site болгон host хийнэ:
+- index.html
+- app.js
+- styles.css
+- ux-fixes.css
+- config.js
+- bootstrap.js
+
+SQL болон START_HERE.txt нь суулгах зориулалттай; website-д байрлуулах албагүй.
+Vercel / Netlify зэрэг static hosting ашиглаж болно. Өмнөх website repository
+байвал дээрх зургаан файлыг тавьж deploy хийнэ. Энэ багцыг бэлтгэх явцад
+хостинг үүсгээгүй, live deployment хийгээгүй.
+
+6. НЭВТРЭХ, АЖИЛТНУУДАА НЭМЭХ
+2-р алхамд үүсгэсэн email/password-оор ShadowOPS-д нэвтэрнэ.
+Owner dashboard шууд нээгдэнэ.
+Designers / Managers дээр ажилтны profile үүсгэнэ. Email талбарт тухайн
+ажилтны нэвтрэх email-ийг зөв оруулна.
+Team Access -> Add access-аар email, level, personnel profile-ийг холбоно.
+P/A employee өөрийн task/profile-ийг, Owner/E/M удирдлагын хэсгүүдийг харна.
+
+Name claim flow ашиглах бол ажилтны email нь personnel profile дээрх email-тай
+таарсан байх ёстой. Request access -> Owner approval хийсний дараа эрх нээгдэнэ.
+Танихгүй signed-in хэрэглэгч бусдын нэрсийн жагсаалтыг хайж авах боломжгүй.
+
+Ажилтнууд сайт дээр Create Account ашиглах бол Supabase Authentication-ийн
+URL Configuration дээр Site URL/Redirect URLs-ийг өөрийн deployed website URL-д
+тохируулна. Email confirmation идэвхтэй үед ажилтан email-ээ баталгаажуулна.
+Supabase Auth-ийн email delivery тохиргоо нь database SQL-ээс тусдаа.
+
+ШИНЭ ФУНКЦҮҮД
+- Task process: To Do -> In Design -> Design Done -> In Review -> Changes ->
+  Approved/Ready -> Scheduled. Өнгөт bar, dropdown, urgency өнгө.
+- HR: deadline efficiency, manual Measurements, ирсэн/явсан цаг, break, hours.
+- Efficiency нь хугацаа нь болсон ажлуудаас хугацаандаа ready болсон хувийг
+  тооцно. Анх хадгалсан deadline-ийг ашиглана. No data бол —.
+- Нэг task-ийг designer, эсвэл designer байхгүй бол manager/supervisor-д тооцно.
+- Cancelled/rejected, deadline-гүй task-ийг denominator-д оруулахгүй.
+- Attendance: Ulaanbaatar цаг, нэг хүн/өдөрт нэг мөр; шөнийн ээлжийг дэмжинэ.
+- PLAYTIME: тусдаа том төслүүд, client/lead/dates/scope/status болон task progress.
+  Төслийн task нь үндсэн Task Management дээрхтэй ижил өгөгдөлтэй.
+- Approved/Ready + Scheduled task-ууд төслийн ready progress-д орно.
+  Scheduled нь сошиалд нийтлэгдсэн гэсэн утга биш.
+
+ШАЛГАЛТ
+Шинэ installer-ийг local PGlite/PostgreSQL engine дээр fake Supabase Auth
+schema/roles-тай ажиллуулж шалгасан. Бүх app RPC, Owner bootstrap, approval,
+таскийн 7 шатлал, first-deadline/approval timestamp, activity deduplication,
+attendance constraints, employee/outsider/anonymous permissions шалгасан.
+Frontend initialization/rendering, process filters, efficiency edge cases,
+public config validation болон pagination-ийг local tests-ээр шалгасан.
+Бодит Supabase login, email delivery, live deployment болон browser visual
+шалгалт хийгдээгүй. Шинэ project үүсгэж холбоход эдгээрийг баталгаажуулна.
+
+Албан ёсны холбоос:
+https://supabase.com/docs/guides/getting-started/quickstarts/reactjs
+https://supabase.com/docs/guides/auth/users
+https://supabase.com/docs/guides/getting-started/api-keys
+https://supabase.com/docs/guides/auth/passwords
