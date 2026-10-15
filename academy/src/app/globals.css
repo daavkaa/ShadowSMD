@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+/* Design tokens (brief §5.6 — suggestions, not fixed). */
+@theme {
+  --color-ink: #241a43;
+  --color-ink-soft: #3b2e66;
+  --color-primary: #8056ea;
+  --color-primary-strong: #6a3fe0;
+  --color-lavender: #bba0ff;
+  --color-lavender-soft: #efe8ff;
+  --color-success: #16a34a;
+  --color-success-soft: #dcfce7;
+  --color-warning: #b45309;
+  --color-warning-soft: #fef3c7;
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fee2e2;
+  --color-surface: #ffffff;
+  --color-canvas: #f7f5fc;
+  --color-muted: #625c74;
+  --color-line: #e4def3;
+  --font-sans: "Noto Sans", "Segoe UI", Roboto, "Helvetica Neue", Arial, system-ui, sans-serif;
+  --radius-card: 1.25rem;
+  --shadow-card: 0 1px 2px rgb(36 26 67 / 0.06), 0 8px 24px -12px rgb(36 26 67 / 0.18);
+  --shadow-node: 0 6px 0 0 rgb(36 26 67 / 0.25);
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body { background: var(--color-canvas); color: var(--color-ink); font-family: var(--font-sans); }
+
+/* Visible focus for keyboard users everywhere. */
+:focus-visible { outline: 3px solid var(--color-primary); outline-offset: 2px; border-radius: 6px; }
+
+.skip-link { position: absolute; left: -9999px; top: 0; }
+.skip-link:focus { left: 1rem; top: 1rem; z-index: 100; background: white; padding: .5rem 1rem; border-radius: .5rem; }
+
+@keyframes node-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+@keyframes drift { from { transform: translateX(0); } to { transform: translateX(24px); } }
+.animate-node-pulse { animation: node-pulse 2.2s ease-in-out infinite; }
+.animate-drift { animation: drift 9s ease-in-out infinite alternate; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; scroll-behavior: auto !important; }
+}

@@ -1,0 +1,31 @@
+name: academy-ci
+on:
+  push:
+    paths: ["academy/**", ".github/workflows/academy-ci.yml"]
+  pull_request:
+    paths: ["academy/**", ".github/workflows/academy-ci.yml"]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: academy } }
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_HOST_AUTH_METHOD: trust }
+        ports: ["5432:5432"]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgres://postgres@localhost:5432/academy_test
+      E2E_DATABASE_URL: postgres://postgres@localhost:5432/academy_e2e
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm, cache-dependency-path: academy/package-lock.json }
+      - run: npm ci
+      - run: psql -h localhost -U postgres -c "create database academy_test" -c "create database academy_e2e"
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+        env: { DATABASE_URL: postgres://postgres@localhost:5432/academy_e2e, AUTH_MODE: dev, DEV_AUTH_SECRET: ci-dev-secret-0123456789abcdef0123, PAYMENT_PROVIDER: demo, APP_STAGE: test }
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
