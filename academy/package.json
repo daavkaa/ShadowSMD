@@ -1,0 +1,49 @@
+{
+  "name": "skills-academy",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "db:local:start": "node scripts/local-pg.mjs start",
+    "db:local:stop": "node scripts/local-pg.mjs stop",
+    "db:migrate": "node scripts/migrate.mjs",
+    "db:seed": "node scripts/migrate.mjs --seed",
+    "db:reset": "node scripts/migrate.mjs --reset --seed",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "vitest run tests/integration",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@pdf-lib/fontkit": "^1.1.1",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.118.0",
+    "next": "15.5.28",
+    "pdf-lib": "1.17.1",
+    "postgres": "3.4.9",
+    "qrcode": "1.5.4",
+    "react": "19.1.10",
+    "react-dom": "19.1.10",
+    "server-only": "^0.0.1",
+    "zod": "4.1.12"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "@tailwindcss/postcss": "4.1.14",
+    "@types/node": "22.18.8",
+    "@types/qrcode": "1.5.5",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.1",
+    "tailwindcss": "4.1.14",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  }
+}
